@@ -4,7 +4,7 @@ import subprocess
 
 def ping(ip):
     """
-    Faz ping em um IP. Retorna True se responder.
+    Hace ping a una IP. Devuelve True si responde.
     """
     sistema = platform.system().lower()
 
@@ -24,41 +24,45 @@ def ping(ip):
         return False
 
 
-def testar_subrede(subnet):
+def probar_subred(subred):
     """
-    Testa IPs de uma sub-rede até encontrar algum que responda ao ping.
+    Prueba las IPs de una subred hasta encontrar alguna que responda al ping.
     """
-    rede = ipaddress.ip_network(subnet, strict=False)
+    red = ipaddress.ip_network(subred, strict=False)
     sistema = platform.system().lower()
 
     usa_emoji = sistema != "windows"
 
-    for ip in rede.hosts():
-        print(f"Testando {ip} ...", end=" ")
+    for ip in red.hosts():
+        print(f"Probando {ip} ...", end=" ")
         if ping(ip):
             if usa_emoji:
-                print("✅ Respondeu!")
+                print("✅ ¡Respondió!")
             else:
-                print("OK - Respondeu!")
+                print("OK - ¡Respondió!")
             return ip
         else:
             if usa_emoji:
-                print("❌ Sem resposta")
+                print("❌ Sin respuesta")
             else:
-                print("Falhou - Sem resposta")
+                print("Falló - Sin respuesta")
 
-    print("Nenhum host respondeu.")
+    print("Ningún host respondió.")
     return None
 
 
 if __name__ == "__main__":
-    subnet = input("Digite a sub-rede (ex: 192.168.1.0/24): ").strip()
-    ip_respondendo = testar_subrede(subnet)
+    while True:
+        subred = input("\nIngrese la subred (ej: 192.168.1.0/24) o 'salir' para terminar: ").strip()
+        if subred.lower() in ["salir", "exit", "quit"]:
+            print("Cerrando el programa...")
+            break
 
-    if ip_respondendo:
-        print(f"\nPrimeiro host que respondeu: {ip_respondendo}")
-    else:
-        print("\nNenhum host da sub-rede respondeu ao ping.")
-
-    # Mantém a janela aberta no Windows
-    input("\nPressione Enter para sair...")
+        try:
+            ip_respondio = probar_subred(subred)
+            if ip_respondio:
+                print(f"\nPrimer host que respondió: {ip_respondio}")
+            else:
+                print("\nNingún host de la subred respondió al ping.")
+        except ValueError:
+            print("❌ Subred inválida, intente de nuevo.")
